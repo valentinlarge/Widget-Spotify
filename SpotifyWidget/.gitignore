@@ -1,0 +1,30 @@
+# Android Standard
+*.iml
+.gradle
+/local.properties
+/.idea/caches
+/.idea/libraries
+/.idea/modules.xml
+/.idea/workspace.xml
+/.idea/navEditor.xml
+/.idea/assetWizardSettings.xml
+.DS_Store
+/build
+/captures
+.externalNativeBuild
+.cxx
+.project
+
+# Google Services
+google-services.json
+
+# Gradle
+.gradle/
+build/
+app/build/
+
+# SECRETS (NE JAMAIS ENLEVER)
+app/keystore.properties
+app/release-key.jks
+*.jks
+*.keystore
