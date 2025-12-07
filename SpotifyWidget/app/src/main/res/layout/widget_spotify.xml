@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- COUCHE 1 : Image de fond (Pochette) -->
+    <!-- COUCHE 1 : Image de fond -->
     <ImageView
         android:id="@+id/widget_album_art"
         android:layout_width="match_parent"
@@ -12,13 +13,13 @@
         android:scaleType="centerCrop"
         android:src="@drawable/ic_music_note" />
 
-    <!-- COUCHE 2 : Dégradé pour la lisibilité -->
+    <!-- COUCHE 2 : Dégradé -->
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/scrim_gradient" />
 
-    <!-- COUCHE 3 : Contenu (Textes et Contrôles) -->
+    <!-- COUCHE 3 : Contenu -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -76,7 +77,7 @@
             android:progress="0"
             android:progressTint="@color/spotify_green" />
 
-        <!-- Contrôles (ImageView uniquement) -->
+        <!-- Contrôles (3 BOUTONS UNIQUEMENT) -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

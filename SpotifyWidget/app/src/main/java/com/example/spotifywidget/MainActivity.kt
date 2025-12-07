@@ -58,7 +58,7 @@ class MainActivity : Activity() {
             REDIRECT_URI
         )
 
-        builder.setScopes(arrayOf("app-remote-control"))
+        builder.setScopes(arrayOf("app-remote-control", "user-library-read", "user-library-modify"))
         val request = builder.build()
 
         AuthorizationClient.openLoginActivity(this, REQUEST_CODE, request)

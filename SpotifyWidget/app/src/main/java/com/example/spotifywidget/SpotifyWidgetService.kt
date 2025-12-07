@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
@@ -46,6 +47,9 @@ class SpotifyWidgetService : Service() {
         const val ACTION_PLAY_PAUSE = "com.example.spotifywidget.ACTION_PLAY_PAUSE"
         const val ACTION_NEXT = "com.example.spotifywidget.ACTION_NEXT"
         const val ACTION_PREVIOUS = "com.example.spotifywidget.ACTION_PREVIOUS"
+
+        // Nouvelle Action pour ouvrir Spotify
+        const val ACTION_OPEN_SPOTIFY = "com.example.spotifywidget.ACTION_OPEN_SPOTIFY"
     }
 
     override fun onBind(intent: Intent?): IBinder? = null
@@ -65,15 +69,21 @@ class SpotifyWidgetService : Service() {
     }
 
     private fun handleAction(action: String) {
-        val playerApi = spotifyAppRemote?.playerApi ?: return
         when (action) {
             ACTION_PLAY_PAUSE -> {
-                playerApi.playerState.setResultCallback { state ->
-                    if (state.isPaused) playerApi.resume() else playerApi.pause()
+                spotifyAppRemote?.playerApi?.playerState?.setResultCallback { state ->
+                    if (state.isPaused) spotifyAppRemote?.playerApi?.resume() else spotifyAppRemote?.playerApi?.pause()
                 }
             }
-            ACTION_NEXT -> playerApi.skipNext()
-            ACTION_PREVIOUS -> playerApi.skipPrevious()
+            ACTION_NEXT -> spotifyAppRemote?.playerApi?.skipNext()
+            ACTION_PREVIOUS -> spotifyAppRemote?.playerApi?.skipPrevious()
+            ACTION_OPEN_SPOTIFY -> {
+                val intent = packageManager.getLaunchIntentForPackage("com.spotify.music")
+                intent?.let {
+                    it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(it)
+                } ?: Log.e(TAG, "Spotify app not found")
+            }
         }
     }
 
@@ -173,13 +183,16 @@ class SpotifyWidgetService : Service() {
                 views.setProgressBar(R.id.widget_progress_bar, 100, progress, false)
             }
 
+            // Clics des boutons
             views.setOnClickPendingIntent(R.id.btn_prev, getPendingIntent(ACTION_PREVIOUS))
             views.setOnClickPendingIntent(R.id.btn_next, getPendingIntent(ACTION_NEXT))
             views.setOnClickPendingIntent(R.id.btn_play_pause, getPendingIntent(ACTION_PLAY_PAUSE))
 
+            // CLIC SUR L'ENSEMBLE DU WIDGET POUR OUVRIR SPOTIFY
+            views.setOnClickPendingIntent(R.id.widget_root_layout, getPendingIntent(ACTION_OPEN_SPOTIFY))
+
             if (currentTrackImageUri != track.imageUri.raw) {
                 currentTrackImageUri = track.imageUri.raw
-                // Mode LARGE + RESIZE SAFE
                 spotifyAppRemote?.imagesApi?.getImage(track.imageUri, Image.Dimension.LARGE)
                     ?.setResultCallback { bitmap ->
                         val safeBitmap = safeResizeBitmap(bitmap)
